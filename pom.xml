@@ -11,21 +11,23 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.yangyang.eda</groupId>
+    <groupId>com.lowcode.workflow</groupId>
     <artifactId>lowCode-workflow-framework</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>lowCode-workflow-framework</name>
     <description>低代码工作流框架</description>
+    <modules>
+        <module>workflow-web</module>
+        <module>workflow-runner</module>
+        <module>workflow-common</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-
-
 
     <build>
         <plugins>
