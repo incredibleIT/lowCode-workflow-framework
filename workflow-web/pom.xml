@@ -21,4 +21,21 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+
+    <dependencies>
+<!--        基础模块 -->
+        <dependency>
+            <groupId>com.lowcode.workflow</groupId>
+            <artifactId>workflow-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+<!--        分页插件 -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.4.2</version>
+        </dependency>
+    </dependencies>
+
 </project>
