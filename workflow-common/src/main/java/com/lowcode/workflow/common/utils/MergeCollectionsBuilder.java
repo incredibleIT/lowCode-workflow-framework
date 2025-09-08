@@ -1,5 +1,6 @@
 package com.lowcode.workflow.common.utils;
 
+import com.sun.scenario.effect.Merge;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -9,6 +10,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class MergeCollectionsBuilder {
+
+
+
+    public static <T> MergeSourceBuilder<T> source(List<T> source) {
+        return new MergeSourceBuilder<>(source);
+    }
+
+    public static <T, K> MergeSourceKeyBuilder<T, K> source(List<T> list, Function<T, K> function) {
+        return new MergeSourceKeyBuilder<>(list, function);
+    }
+
+
     /**
      * 合并两个集合
      */

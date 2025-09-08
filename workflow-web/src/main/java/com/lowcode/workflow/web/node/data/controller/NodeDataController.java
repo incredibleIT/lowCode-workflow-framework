@@ -2,8 +2,11 @@ package com.lowcode.workflow.web.node.data.controller;
 
 
 import com.lowcode.workflow.common.http.Result;
+import com.lowcode.workflow.common.utils.MergeCollectionsBuilder;
 import com.lowcode.workflow.web.node.data.service.NodeDataService;
 import com.lowcode.workflow.web.node.entity.NodeData;
+import com.lowcode.workflow.web.node.entity.NodeType;
+import com.lowcode.workflow.web.node.type.service.NodeTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +17,9 @@ public class NodeDataController {
 
     @Autowired
     private NodeDataService nodeDataService;
+
+    @Autowired
+    private NodeTypeService nodeTypeService;
 
 
 

@@ -9,4 +9,6 @@ import java.util.List;
 @Mapper
 public interface NodeTypeMapper {
     List<NodeType> findNodeTypes(String name);
+
+    List<NodeType> findByIds(List<Long> ids);
 }

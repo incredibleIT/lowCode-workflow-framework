@@ -3,6 +3,7 @@ package com.lowcode.workflow.web;
 
 import com.lowcode.workflow.web.flow.service.FlowService;
 import com.lowcode.workflow.web.http.FlowRequest;
+import com.lowcode.workflow.web.node.data.mapper.NodeDataMapper;
 import com.lowcode.workflow.web.node.data.service.NodeDataService;
 import com.lowcode.workflow.web.node.entity.NodeType;
 import com.lowcode.workflow.web.node.params.mapper.NodeTypeParamMapper;
@@ -30,6 +31,10 @@ public class FlowTest {
     @Autowired
     private NodeDataService nodeDataService;
 
+    @Autowired
+    private NodeDataMapper nodeDataMapper;
+
+
 
 
     @Test
@@ -49,7 +54,9 @@ public class FlowTest {
 
     @Test
     public void test03() {
-        nodeDataService.getNodeData("2i0e08w5ktw000", null).forEach(System.out::println);
+//        nodeDataService.getNodeData("2i0e08w5ktw000", null).forEach(System.out::println);
+
+        nodeDataMapper.findNodeData("2i0e08w5ktw000", null).forEach(System.out::println);
     }
 
 }

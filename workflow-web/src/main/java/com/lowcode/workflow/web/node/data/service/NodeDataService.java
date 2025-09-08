@@ -1,9 +1,14 @@
 package com.lowcode.workflow.web.node.data.service;
 
 
+import com.lowcode.workflow.common.utils.MergeCollectionsBuilder;
 import com.lowcode.workflow.web.node.data.mapper.NodeDataMapper;
 import com.lowcode.workflow.web.node.entity.NodeData;
+import com.lowcode.workflow.web.node.entity.NodeType;
+import com.lowcode.workflow.web.node.type.mapper.NodeTypeMapper;
+import com.lowcode.workflow.web.node.type.service.NodeTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,9 +19,17 @@ public class NodeDataService {
     @Autowired
     private NodeDataMapper nodeDataMapper;
 
-    public List<NodeData> getNodeData(String flowId, String version) {
+    @Autowired
+    private NodeTypeService nodeTypeService;
 
-        return nodeDataMapper.findNodeData(flowId, version);
+    public List<NodeData> getNodeData(String flowId,@Nullable String version) {
+
+        List<NodeData> nodeDataList = nodeDataMapper.findNodeData(flowId, version);
+
+
+        return MergeCollectionsBuilder.source(nodeDataList, NodeData::getTypeId)
+                .target(nodeTypeService::findByIds, NodeType::getId)
+                .mergeTtoS(NodeData::setNodeType);
     }
 
     public void updateNodeData(List<NodeData> nodeData) {

@@ -16,7 +16,7 @@ spring:
       minimum-idle: 5
       maximum-pool-size: 20
 mybatis:
-  type-handlers-package: com.flow.eda.web.mybatis
+  type-handlers-package: com.lowcode.workflow.web.handler
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

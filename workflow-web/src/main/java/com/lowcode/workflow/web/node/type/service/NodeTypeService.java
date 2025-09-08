@@ -38,6 +38,10 @@ public class NodeTypeService {
         return map;
     }
 
+    public List<NodeType> findByIds(List<Long> ids) {
+        return nodeTypeMapper.findByIds(ids);
+    }
+
 
     private List<NodeType> mergeNodeTypeParam(List<NodeType> nodeTypeList) {
 

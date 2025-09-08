@@ -12,4 +12,8 @@
         </where>
 
     </select>
+    <select id="findByIds" resultType="com.lowcode.workflow.web.node.entity.NodeType">
+        select * from eda_flow_node_type where id in
+        <foreach collection="ids" separator="," open="(" close=")" item="id">#{id}</foreach>
+    </select>
 </mapper>
