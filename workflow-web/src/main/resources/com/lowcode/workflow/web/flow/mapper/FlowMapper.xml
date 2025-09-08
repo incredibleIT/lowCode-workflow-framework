@@ -42,7 +42,7 @@
                 and status = #{status}
             </if>
         </where>
-        order by creat_date desc
+        order by create_date desc
     </select>
 
 

@@ -1,0 +1,27 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: workflow-web
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/flow_eda?useSSL=false&useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: yy3908533
+    hikari:
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      minimum-idle: 5
+      maximum-pool-size: 20
+mybatis:
+  type-handlers-package: com.flow.eda.web.mybatis
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+logging:
+  level:
+    com.lowcode.workflow.web.node.data.mapper: debug

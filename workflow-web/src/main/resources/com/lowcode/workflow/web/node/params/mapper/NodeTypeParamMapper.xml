@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lowcode.workflow.web.node.params.mapper.NodeTypeParamMapper">
+
+
+    <select id="findByTypeIds" resultType="com.lowcode.workflow.web.node.entity.NodeTypeParam">
+        select * from eda_flow_node_type_param
+        where type_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+    </select>
+</mapper>
