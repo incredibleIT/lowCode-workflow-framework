@@ -31,9 +31,6 @@ public class FlowTest {
     @Autowired
     private NodeDataService nodeDataService;
 
-    @Autowired
-    private NodeDataMapper nodeDataMapper;
-
 
 
 
@@ -54,9 +51,14 @@ public class FlowTest {
 
     @Test
     public void test03() {
-//        nodeDataService.getNodeData("2i0e08w5ktw000", null).forEach(System.out::println);
+        nodeDataService.getNodeData("2i0e08w5ktw000", null).forEach(System.out::println);
 
-        nodeDataMapper.findNodeData("2i0e08w5ktw000", null).forEach(System.out::println);
+//        nodeDataMapper.findNodeData("2i0e08w5ktw000", null).forEach(System.out::println);
     }
 
+
+    @Test
+    public void test04() {
+        nodeDataService.runNodeData("2i0e08w5ktw000");
+    }
 }
