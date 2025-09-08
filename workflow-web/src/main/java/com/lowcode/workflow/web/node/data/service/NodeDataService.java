@@ -66,6 +66,7 @@ public class NodeDataService {
      * @param flowId 要执行的流程
      */
     public void runNodeData(String flowId) {
+        System.out.println("--------test------------即将推送到运行时引擎");
         // 将运行时数据提交到运行时引擎
         nodeRuntimeDataService.runNodeRuntimeData(getAndConvertNodeDataListToNodeRuntimeDataList(flowId));
     }

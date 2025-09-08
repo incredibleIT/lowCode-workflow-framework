@@ -1,0 +1,23 @@
+server:
+  port: 8088
+spring:
+  application:
+    name: workflow-runner
+
+dubbo:
+  application:
+    name: workflow-runner
+    qos-enable: false
+    qos-accept-foreign-ip: false
+  registry:
+    protocol: dubbo
+    address: nacos://localhost:8848
+    username: nacos
+    password: nacos
+  protocol:
+    name: dubbo
+    port: 20882
+  consumer:
+    check: false
+    timeout: 5000
+    retries: 0

@@ -4,11 +4,13 @@ package com.lowcode.workflow.common.model;
 import lombok.Data;
 import org.bson.Document;
 
+import java.io.Serializable;
+
 /**
  * 节点运行时数据结构
  */
 @Data
-public class NodeRuntimeData {
+public class NodeRuntimeData implements Serializable {
     private String id;
     /** 流id */
     private String flowId;
