@@ -47,7 +47,6 @@ public abstract class DefaultNode implements Node {
     public Document putToNextNodeInput() {
 
         // TODO 判空
-        System.out.println(Thread.currentThread().getName() + "的自定义参数" + this.payloadParams);
         return new Document("input", this.payloadParams);
     }
 

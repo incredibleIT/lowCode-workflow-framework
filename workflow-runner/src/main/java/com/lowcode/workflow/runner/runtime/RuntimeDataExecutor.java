@@ -5,6 +5,7 @@ import com.lowcode.workflow.common.model.NodeRuntimeData;
 import com.lowcode.workflow.common.utils.CollectionUtil;
 import com.lowcode.workflow.runner.enu.NodeTypeEnum;
 import com.lowcode.workflow.runner.node.Node;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 
 import java.awt.print.Pageable;
@@ -13,6 +14,7 @@ import java.util.List;
 /**
  * 单个流程的执行器
  */
+@Slf4j
 public class RuntimeDataExecutor {
 
     private final List<NodeRuntimeData> nodeRuntimeDataList;
@@ -39,7 +41,7 @@ public class RuntimeDataExecutor {
      * @param currentNode 节点运行时数据
      */
     private void run(NodeRuntimeData currentNode) {
-        System.out.println(Thread.currentThread().getName() + "-(测试)-当前正在运行中的节点" + currentNode);
+        log.info("--({})--线程: {} 当前正在运行的节点: {}", "测试", Thread.currentThread().getName(), currentNode);
         // 反射获取节点实例instance
         Node nodeInstance = getNodeInstance(currentNode);
 
@@ -60,7 +62,7 @@ public class RuntimeDataExecutor {
 
         // 找到下一个节点
         List<NodeRuntimeData> nextNodes = findNextNode(nodeRuntimeData);
-        System.out.println(nodeRuntimeData.getId() + "-(测试)-" + Thread.currentThread().getName() + "的下一个节点有: " + nextNodes);
+        log.info("--({})--线程: {} 当前节点: {} 的下一个节点有: {}", "测试", Thread.currentThread().getName(), nodeRuntimeData.getId(), nextNodes);
         // 异步执行节点链, 涉及到一个参数传递的问题
         CollectionUtil.foreach(nextNodes, node -> RuntimeDataThreadPool.getThreadPool(flowId).execute(() -> this.run(setNextNodeInputParam(node, param))));
 
