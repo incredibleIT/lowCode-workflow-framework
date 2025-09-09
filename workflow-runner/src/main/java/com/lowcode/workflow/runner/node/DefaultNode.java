@@ -17,9 +17,11 @@ public abstract class DefaultNode implements Node {
     @Setter
     private Status status = Status.RUNNING;
 
+
+
     // 当前节点所属流程Id和节点Id
-//    private String flowId;
-//    private String nodeId;
+    private String flowId;
+    private String nodeId;
 
 
     /**
@@ -31,9 +33,12 @@ public abstract class DefaultNode implements Node {
         if (params == null) {
             throw new IllegalArgumentException("params is null");
         }
+        this.flowId = params.getString("flowId");
+        this.nodeId = params.getString("nodeId");
+
 
         this.input = params.get("input", Document.class);
-        this.payloadParams = params.get("payloadParams", Document.class);
+        this.payloadParams = params.get("payload", Document.class);
         // 校验参数
         this.verify(params);
     }
@@ -42,6 +47,7 @@ public abstract class DefaultNode implements Node {
     public Document putToNextNodeInput() {
 
         // TODO 判空
+        System.out.println(Thread.currentThread().getName() + "的自定义参数" + this.payloadParams);
         return new Document("input", this.payloadParams);
     }
 

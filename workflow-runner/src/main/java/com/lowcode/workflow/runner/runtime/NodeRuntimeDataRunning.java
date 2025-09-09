@@ -16,10 +16,10 @@ public class NodeRuntimeDataRunning {
         String flowId = nodeRuntimeDataList.get(0).getFlowId();
         // 获取所有开始节点
         List<NodeRuntimeData> start = CollectionUtil.filter(nodeRuntimeDataList, this::isStart);
-        System.out.println("------------测试开始节点------------------");
-        start.forEach(System.out::println);
+//        System.out.println("----------------(测试)收集的所有开始节点----------------");
+//        start.forEach(System.out::println);
         // 调用线程池执行所有的开始节点
-//        CollectionUtil.foreach(start, node -> RuntimeDataThreadPool.getThreadPool(flowId).execute(() -> new RuntimeDataExecutor(nodeRuntimeDataList).run(node)));
+        CollectionUtil.foreach(start, node -> RuntimeDataThreadPool.getThreadPool(flowId).execute(() -> new RuntimeDataExecutor(nodeRuntimeDataList).start(node)));
     }
 
 

@@ -1,7 +1,9 @@
 package com.lowcode.workflow.runner.enu;
 
+import com.lowcode.workflow.common.model.NodeRuntimeData;
 import com.lowcode.workflow.runner.node.Node;
 import com.lowcode.workflow.runner.node.start.StartNode;
+import jdk.nashorn.internal.runtime.regexp.joni.constants.internal.NodeType;
 import lombok.Getter;
 
 
@@ -21,5 +23,24 @@ public enum NodeTypeEnum {
         this.clazz = clazz;
     }
 
+    private static NodeTypeEnum getNodeTypeEnum(String nodeType) {
+        for (NodeTypeEnum value : NodeTypeEnum.values()) {
+            if (value.getType().equals(nodeType)) {
+                return value;
+            }
+        }
+        return null;
+    }
 
+
+    public static Class<? extends Node> getClazzBynodeRuntimeData(NodeRuntimeData nodeRuntimeData) {
+        String nodeType = nodeRuntimeData.getType();
+        NodeTypeEnum nodeTypeEnum = getNodeTypeEnum(nodeType);
+        if (nodeTypeEnum == null) {
+            System.out.println("-----------------(测试)非法的节点类型------------------");
+            throw new IllegalArgumentException("-----------------(测试)非法的节点类型------------------");
+        }
+
+        return nodeTypeEnum.getClazz();
+    }
 }
