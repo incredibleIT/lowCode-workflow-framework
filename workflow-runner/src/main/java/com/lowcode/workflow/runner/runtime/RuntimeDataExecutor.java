@@ -59,7 +59,6 @@ public class RuntimeDataExecutor {
      * @param param 传递的参数
      */
     private void runNextNode(NodeRuntimeData nodeRuntimeData, Document param) {
-
         // 找到下一个节点
         List<NodeRuntimeData> nextNodes = findNextNode(nodeRuntimeData);
         log.info("--({})--线程: {} 当前节点: {} 的下一个节点有: {}", "测试", Thread.currentThread().getName(), nodeRuntimeData.getId(), nextNodes);
