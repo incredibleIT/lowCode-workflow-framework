@@ -5,10 +5,12 @@ import com.lowcode.workflow.runner.node.CallbackFunction;
 import com.lowcode.workflow.runner.node.DefaultNode;
 import com.lowcode.workflow.runner.runtime.TimeTaskRuntime;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Getter
 public class TimerNode extends DefaultNode {
     /**
@@ -67,12 +69,12 @@ public class TimerNode extends DefaultNode {
 
     @Override
     public void run(CallbackFunction callback) {
+
         this.runnable = () -> {
             Document output = putToNextNodeInput();
 
             callback.callback(output);
         };
-
         /**
          * 每个TimeNode的run方法只会被调用一次
          * 将runnable提交到定时任务调度器
@@ -84,5 +86,6 @@ public class TimerNode extends DefaultNode {
             // 无限执行
             TimeTaskRuntime.runTimeTaskAlways(this);
         }
+        log.info("TimerNode的run方法被流程执行引擎调用, 节点为{}, 指定的执行次数为{}", this, this.times);
     }
 }

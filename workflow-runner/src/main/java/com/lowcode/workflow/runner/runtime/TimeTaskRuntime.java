@@ -6,9 +6,7 @@ import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.scheduling.support.PeriodicTrigger;
-
 import java.time.ZoneId;
-import java.util.TimeZone;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -40,14 +38,11 @@ public class TimeTaskRuntime {
         // 获取执行当前定时器的线程池
         ThreadPoolTaskScheduler schedulerThreadPool = RuntimeDataThreadPool.getSchedulerThreadPool(timerNode.getFlowId());
 
-        // TODO 执行定时任务
         if (timerNode.getCron() != null) {
             future[0] = schedulerThreadPool.schedule(task, trigger(timerNode));
         } else {
             future[0] = schedulerThreadPool.getScheduledExecutor().scheduleAtFixedRate(task, 0, timerNode.getPeriod(), timerNode.getTimeUnit());
         }
-
-
 
     }
 
