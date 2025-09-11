@@ -8,6 +8,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.scheduling.support.PeriodicTrigger;
 import java.time.ZoneId;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,6 +18,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 public class TimeTaskRuntime {
+
+    private static final Map<String, ScheduledFuture<?>> SCHEDULED_FUTURE_MAP = new ConcurrentHashMap<>();
     /**
      * 执行指定运行次数的定时任务
      * @param timerNode 定时任务节点
@@ -71,10 +75,22 @@ public class TimeTaskRuntime {
         ThreadPoolTaskScheduler schedulerThreadPool = RuntimeDataThreadPool.getSchedulerThreadPool(timerNode.getFlowId());
         if (timerNode.getCron() != null) {
             log.info("[提交到定时任务线程池执行无限次数的定时任务]当前定时任务为cron表达式控制的定时任务, cron表达式为: {}, 任务: {}", timerNode.getCron(), timerNode);
-            schedulerThreadPool.schedule(task, trigger(timerNode));
+            SCHEDULED_FUTURE_MAP.put(timerNode.getNodeId(), schedulerThreadPool.schedule(task, trigger(timerNode)));
         } else {
             log.info("[提交到定时任务线程池执行无限次数的定时任务]当前定时任务为固定时间间隔控制的定时任务, 时间间隔为: {} {}, 任务: {}", timerNode.getPeriod(), timerNode.getTimeUnit(), timerNode);
-            schedulerThreadPool.getScheduledExecutor().scheduleAtFixedRate(task, 0, timerNode.getPeriod(), timerNode.getTimeUnit());
+            SCHEDULED_FUTURE_MAP.put(timerNode.getNodeId(), schedulerThreadPool.getScheduledExecutor().scheduleAtFixedRate(task, 0, timerNode.getPeriod(), timerNode.getTimeUnit()));
+        }
+        SCHEDULED_FUTURE_MAP.forEach((key, value) -> log.info("[当前构建定时任务生命流程管理器] SCHEDULED_FUTURE_MAP的内容: key:{}-value:{}", key, value));
+    }
+
+    /**
+     * 提供手动停止无限次数执行定时调度任务的方法
+     * @param timerNode 定时任务节点
+     */
+    public static void shutdownAlwaysTimeTask(TimerNode timerNode) {
+        if (SCHEDULED_FUTURE_MAP.containsKey(timerNode.getNodeId())) {
+            SCHEDULED_FUTURE_MAP.get(timerNode.getNodeId()).cancel(false);
+            SCHEDULED_FUTURE_MAP.remove(timerNode.getNodeId());
         }
     }
 }
