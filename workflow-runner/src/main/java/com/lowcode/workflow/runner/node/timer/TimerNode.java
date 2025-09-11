@@ -59,7 +59,7 @@ public class TimerNode extends DefaultNode {
 
         if ("CRON".equals(type)) {
             String cron = params.getString("cron");
-            this.cron = value;
+            this.cron = cron;
         } else {
             this.period = Long.parseLong(value);
             this.timeUnit = TimeUnit.valueOf(type);
@@ -86,6 +86,6 @@ public class TimerNode extends DefaultNode {
             // 无限执行
             TimeTaskRuntime.runTimeTaskAlways(this);
         }
-        log.info("TimerNode的run方法被流程执行引擎调用, 节点为{}, 指定的执行次数为{}", this, this.times);
+        log.info("TimerNode的run方法被流程执行引擎调用, 节点为{}, 指定的执行次数为{}", this.getNodeId(), this.times);
     }
 }

@@ -35,6 +35,7 @@ public class NodeRuntimeDataRunning {
 
         //TODO 调用线程池执行所有的定时器节点
         log.info("-----------将定时任务提交到线程池调度--------------");
+        CollectionUtil.foreach(timer, t -> RuntimeDataThreadPool.getThreadPool(flowId).execute(() -> new RuntimeDataExecutor(nodeRuntimeDataList).start(t)));
     }
 
 

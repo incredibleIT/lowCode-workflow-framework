@@ -33,7 +33,6 @@ public abstract class DefaultNode implements Node {
      * @param params 参数
      */
     public DefaultNode(Document params) {
-        // TODO
         if (params == null) {
             throw new IllegalArgumentException("params is null");
         }
