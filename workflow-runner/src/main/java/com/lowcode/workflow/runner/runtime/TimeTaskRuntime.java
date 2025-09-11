@@ -16,8 +16,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 public class TimeTaskRuntime {
-
-
     /**
      * 执行指定运行次数的定时任务
      * @param timerNode 定时任务节点
@@ -67,7 +65,16 @@ public class TimeTaskRuntime {
      * @param timerNode 定时任务节点
      */
     public static void runTimeTaskAlways(TimerNode timerNode) {
-
-
+        Runnable task = () -> {
+            timerNode.getRunnable().run();
+        };
+        ThreadPoolTaskScheduler schedulerThreadPool = RuntimeDataThreadPool.getSchedulerThreadPool(timerNode.getFlowId());
+        if (timerNode.getCron() != null) {
+            log.info("[提交到定时任务线程池执行无限次数的定时任务]当前定时任务为cron表达式控制的定时任务, cron表达式为: {}, 任务: {}", timerNode.getCron(), timerNode);
+            schedulerThreadPool.schedule(task, trigger(timerNode));
+        } else {
+            log.info("[提交到定时任务线程池执行无限次数的定时任务]当前定时任务为固定时间间隔控制的定时任务, 时间间隔为: {} {}, 任务: {}", timerNode.getPeriod(), timerNode.getTimeUnit(), timerNode);
+            schedulerThreadPool.getScheduledExecutor().scheduleAtFixedRate(task, 0, timerNode.getPeriod(), timerNode.getTimeUnit());
+        }
     }
 }
