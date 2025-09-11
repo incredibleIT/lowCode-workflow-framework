@@ -1,5 +1,6 @@
 package com.lowcode.workflow.runner.node;
 
+import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
 
@@ -20,7 +21,10 @@ public abstract class DefaultNode implements Node {
 
 
     // 当前节点所属流程Id和节点Id
+    @Getter
     private String flowId;
+
+    @Getter
     private String nodeId;
 
 
@@ -29,7 +33,6 @@ public abstract class DefaultNode implements Node {
      * @param params 参数
      */
     public DefaultNode(Document params) {
-        // TODO
         if (params == null) {
             throw new IllegalArgumentException("params is null");
         }
@@ -39,7 +42,7 @@ public abstract class DefaultNode implements Node {
 
         this.input = params.get("input", Document.class);
         this.payloadParams = params.get("payload", Document.class);
-        // 校验参数
+        // 校验校验并赋值参数
         this.verify(params);
     }
 

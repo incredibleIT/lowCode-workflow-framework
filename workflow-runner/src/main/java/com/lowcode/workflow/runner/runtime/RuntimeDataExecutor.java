@@ -7,8 +7,6 @@ import com.lowcode.workflow.runner.enu.NodeTypeEnum;
 import com.lowcode.workflow.runner.node.Node;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
-
-import java.awt.print.Pageable;
 import java.util.List;
 
 /**
@@ -42,6 +40,10 @@ public class RuntimeDataExecutor {
      */
     private void run(NodeRuntimeData currentNode) {
         log.info("--({})--线程: {} 当前正在运行的节点: {}", "测试", Thread.currentThread().getName(), currentNode);
+        if (currentNode.getParams() == null)  {
+            currentNode.setParams(new Document());
+        }
+        currentNode.getParams().append("flowId", flowId).append("nodeId", currentNode.getId());
         // 反射获取节点实例instance
         Node nodeInstance = getNodeInstance(currentNode);
 
@@ -59,7 +61,6 @@ public class RuntimeDataExecutor {
      * @param param 传递的参数
      */
     private void runNextNode(NodeRuntimeData nodeRuntimeData, Document param) {
-
         // 找到下一个节点
         List<NodeRuntimeData> nextNodes = findNextNode(nodeRuntimeData);
         log.info("--({})--线程: {} 当前节点: {} 的下一个节点有: {}", "测试", Thread.currentThread().getName(), nodeRuntimeData.getId(), nextNodes);

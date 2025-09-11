@@ -5,8 +5,6 @@ import com.lowcode.workflow.runner.node.CallbackFunction;
 import com.lowcode.workflow.runner.node.DefaultNode;
 import org.bson.Document;
 
-import java.util.concurrent.locks.Lock;
-
 /**
  * 开始节点
  */

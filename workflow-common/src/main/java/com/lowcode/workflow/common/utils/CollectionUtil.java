@@ -91,4 +91,19 @@ public class CollectionUtil {
         }
         return null;
     }
+
+
+    /**
+     * 集合中是否存在不满足指定条件的元素
+     * @param collection 集合
+     * @param predicate 条件
+     * @return true：存在 false：不存在
+     * @param <T> 集合元素类型
+     */
+    public static <T> boolean noneMatch(Collection<T> collection, Predicate<T> predicate) {
+        return collection.stream().noneMatch(predicate);
+    }
+
+
+
 }

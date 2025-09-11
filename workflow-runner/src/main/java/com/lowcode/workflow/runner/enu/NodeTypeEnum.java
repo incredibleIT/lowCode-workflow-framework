@@ -3,6 +3,7 @@ package com.lowcode.workflow.runner.enu;
 import com.lowcode.workflow.common.model.NodeRuntimeData;
 import com.lowcode.workflow.runner.node.Node;
 import com.lowcode.workflow.runner.node.start.StartNode;
+import com.lowcode.workflow.runner.node.timer.TimerNode;
 import jdk.nashorn.internal.runtime.regexp.joni.constants.internal.NodeType;
 import lombok.Getter;
 
@@ -11,7 +12,8 @@ import lombok.Getter;
 public enum NodeTypeEnum {
 
     /** 基础节点 */
-    START("start", StartNode.class);
+    START("start", StartNode.class),
+    TIMER("timer", TimerNode.class);
 
     private final String type;
     private final Class<? extends Node> clazz;
