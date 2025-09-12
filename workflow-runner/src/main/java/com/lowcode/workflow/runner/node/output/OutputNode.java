@@ -12,7 +12,6 @@ public class OutputNode extends DefaultNode {
     Document p = new Document();
 
 
-
     /**
      * 构造当前节点参数
      *
