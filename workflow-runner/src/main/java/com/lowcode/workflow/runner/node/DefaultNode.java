@@ -9,6 +9,7 @@ import org.bson.Document;
  */
 public abstract class DefaultNode implements Node {
     // 上一个节点的输入参数
+    @Getter
     private Document input;
 
     // 本节点的自定义参数
@@ -38,6 +39,8 @@ public abstract class DefaultNode implements Node {
         }
         this.flowId = params.getString("flowId");
         this.nodeId = params.getString("nodeId");
+        params.remove("flowId");
+        params.remove("nodeId");
 
 
         this.input = params.get("input", Document.class);

@@ -1,6 +1,7 @@
 package com.lowcode.workflow.runner.runtime;
 
 
+import com.lowcode.workflow.runner.node.Node;
 import com.lowcode.workflow.runner.node.timer.TimerNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.Trigger;
@@ -31,6 +32,9 @@ public class TimeTaskRuntime {
 
         Runnable task = () -> {
             if (runTaskCount.getAndIncrement() < times) {
+                if (runTaskCount.get() == times) {
+                    timerNode.setStatus(Node.Status.FINISHED);
+                }
                 timerNode.getRunnable().run();
             } else {
                 // TODO 做一些校验

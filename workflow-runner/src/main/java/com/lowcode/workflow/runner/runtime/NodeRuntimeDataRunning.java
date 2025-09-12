@@ -57,7 +57,7 @@ public class NodeRuntimeDataRunning {
      */
     private boolean isFirst(NodeRuntimeData nodeRuntimeData, List<NodeRuntimeData> nodeRuntimeDataList) {
 //        log.info("-----------------当前节点是否为起点节点: {}", nodeRuntimeData);
-        return CollectionUtil.noneMatch(nodeRuntimeDataList, node -> Objects.equals(node.getFrom(), nodeRuntimeData.getId()));
+        return CollectionUtil.noneMatch(nodeRuntimeDataList, node -> Objects.equals(node.getTo(), nodeRuntimeData.getId()));
     }
 
     /**
