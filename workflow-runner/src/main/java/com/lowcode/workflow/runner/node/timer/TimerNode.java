@@ -10,6 +10,9 @@ import org.bson.Document;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 定时器节点
+ */
 @Slf4j
 @Getter
 public class TimerNode extends DefaultNode {
