@@ -2,6 +2,7 @@ package com.lowcode.workflow.runner.enu;
 
 import com.lowcode.workflow.common.model.NodeRuntimeData;
 import com.lowcode.workflow.runner.node.Node;
+import com.lowcode.workflow.runner.node.db.mysql.MysqlNode;
 import com.lowcode.workflow.runner.node.output.OutputNode;
 import com.lowcode.workflow.runner.node.start.StartNode;
 import com.lowcode.workflow.runner.node.timer.TimerNode;
@@ -15,7 +16,9 @@ public enum NodeTypeEnum {
     /** 基础节点 */
     START("start", StartNode.class),
     TIMER("timer", TimerNode.class),
-    OUTPUT("output", OutputNode.class);
+    OUTPUT("output", OutputNode.class),
+    MYSQL("mysql", MysqlNode.class);
+
 
     private final String type;
     private final Class<? extends Node> clazz;

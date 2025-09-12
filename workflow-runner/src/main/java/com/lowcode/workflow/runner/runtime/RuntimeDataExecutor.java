@@ -70,13 +70,20 @@ public class RuntimeDataExecutor {
     }
 
     private NodeRuntimeData setNextNodeInputParam(NodeRuntimeData nextNode, Document input) {
-        Document param = null;
-        if (input != null) {
-            param = input;
+        if (nextNode.getParams() != null) {
+            if (input != null) {
+                nextNode.getParams().putAll(input);
+            }
         } else {
-            param = new Document();
+            Document param = null;
+            if (input != null) {
+                param = input;
+            } else {
+                param = new Document();
+            }
+            nextNode.setParams(param);
         }
-        nextNode.setParams(param);
+
         return nextNode;
     }
 
