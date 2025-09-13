@@ -17,8 +17,8 @@ public class NodeRuntimeDataRunning {
 
     public void runNodeRuntimeData(List<NodeRuntimeData> nodeRuntimeDataList) {
         String flowId = nodeRuntimeDataList.get(0).getFlowId();
-        // 获取所有开始节点, TODO BUG: 一个流中只有是起点的开始节点才合法
-        List<NodeRuntimeData> start = CollectionUtil.filter(nodeRuntimeDataList, this::isStart);
+        // 获取所有开始节点, 已修复 BUG: 一个流中只有是起点的开始节点才合法
+        List<NodeRuntimeData> start = CollectionUtil.filter(nodeRuntimeDataList, nodeRuntimeData -> isFirst(nodeRuntimeData, nodeRuntimeDataList) && isStart(nodeRuntimeData));
         // 获取所有作为起点的定时器节点
         List<NodeRuntimeData> timer = CollectionUtil.filter(nodeRuntimeDataList, nodeRuntimeData -> isFirst(nodeRuntimeData, nodeRuntimeDataList) && isTimer(nodeRuntimeData));
 
