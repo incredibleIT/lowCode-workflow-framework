@@ -11,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.springframework.stereotype.Service;
+
+import javax.naming.Binding;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
@@ -35,7 +38,7 @@ public class RabbitMQMetaGetterService {
     /**
      * 获取当前连接的所有存在的交换机
      */
-    public void getAllExchange() {
+    public List<RabbitExchange> getAllExchange() {
         Request request = getRequest("/exchanges");
         try (Response response = getResponse(request)) {
 
@@ -44,9 +47,11 @@ public class RabbitMQMetaGetterService {
             List<RabbitExchange> rabbitExchangeList = gson.fromJson(responseBody, new TypeToken<List<RabbitExchange>>() {}.getType());
 
             CollectionUtil.foreach(rabbitExchangeList, rabbitExchange -> log.info("(测试) 当前的交换机有: {}", rabbitExchange.toString()));
+            return rabbitExchangeList;
         } catch (IOException e) {
             // TODO 做一些处理
             System.out.println(e.getMessage());
+            return null;
         }
 
     }
@@ -54,30 +59,31 @@ public class RabbitMQMetaGetterService {
     /**
      * 获取当前连接的所有存在的队列
      */
-    public void getAllQueue() {
+    public List<RabbitQueue> getAllQueue() {
         Request request = getRequest("/queues");
         try (Response response = getResponse(request)) {
             String responseBody = response.body().string();
             log.info("(测试) 当前的队列有: {}", responseBody);
             List<RabbitQueue> rabbitQueueList = gson.fromJson(responseBody, new TypeToken<List<RabbitQueue>>(){}.getType());
             CollectionUtil.foreach(rabbitQueueList, rabbitQueue -> log.info("(测试) 当前的队列有: {}", rabbitQueue.toString()));
-
+            return rabbitQueueList;
         } catch (IOException e) {
-            // TODO 做一些处理
             System.out.println(e.getMessage());
+            return null;
         }
     }
 
     /**
      * 获取当前连接的所有存在的绑定关系
      */
-    public void getAllBinding() {
+    public List<RabbitBinding> getAllBinding() {
         Request request = getRequest("/bindings");
         try (Response response = getResponse(request)) {
             String responseBody = response.body().string();
             log.info("(测试) 当前的绑定关系有: {}", responseBody);
             List<RabbitBinding> rabbitBindingList = gson.fromJson(responseBody, new TypeToken<List<RabbitBinding>>(){}.getType());
             CollectionUtil.foreach(rabbitBindingList, rabbitBinding -> log.info(("[测试]绑定关系: " + (rabbitBinding.getSource().equals("") ? "(default)": rabbitBinding.getSource()) + " -> " + rabbitBinding.getDestination() + " by " + rabbitBinding.getRouting_key())));
+            return rabbitBindingList;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -96,4 +102,8 @@ public class RabbitMQMetaGetterService {
         return httpClient.newCall(request).execute();
     }
 
+    public RabbitExchange getExchangeByName(String exchange) {
+
+        return null;
+    }
 }
