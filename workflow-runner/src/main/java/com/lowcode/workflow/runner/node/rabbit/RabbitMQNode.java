@@ -1,12 +1,19 @@
 package com.lowcode.workflow.runner.node.rabbit;
 
+import com.lowcode.workflow.common.utils.CollectionUtil;
 import com.lowcode.workflow.runner.node.CallbackFunction;
 import com.lowcode.workflow.runner.node.DefaultNode;
 import com.lowcode.workflow.runner.node.rabbit.entity.RabbitBinding;
 import com.lowcode.workflow.runner.node.rabbit.entity.RabbitExchange;
 import com.lowcode.workflow.runner.node.rabbit.entity.RabbitQueue;
+import lombok.Builder;
 import lombok.Data;
 import org.bson.Document;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -85,20 +92,36 @@ public class RabbitMQNode extends DefaultNode {
         // 首先应该去判断一下用户选择的exchange的类型
         RabbitExchange rabbitExchange = rabbitMQMetaGetterService.getExchangeByName(exchange);
         String exchangeType = rabbitExchange.getType();
+        // rabbit对于exchange, queue, binding的操作
+        RabbitAdmin rabbitAdmin = dynamicRabbitConnectionBuilder.getRabbitAdmin();
+        // 用于发送消息
+        RabbitTemplate rabbitTemplate = dynamicRabbitConnectionBuilder.getRabbitTemplate();
 
 
         if ("".equals(exchangeType)) {
             // 判断是复用了队列, 还是自己需要新建队列
+            if (CollectionUtil.noneMatch(bindingList,
+                    rabbitBinding -> rabbitBinding.getSource().equals(rabbitExchange.getName()) && rabbitBinding.getDestination().equals(queue))) {
+                // 没有匹配的就去新建队列
+                rabbitAdmin.declareQueue(new Queue(queue, true, false, false, null));
+            }
+            rabbitTemplate.convertAndSend(exchange, queue, message);
+        }
 
-
+        if ("fanout".equals(exchangeType)) {
+            // 判断是否复用已经存在的队列
+            if (CollectionUtil.noneMatch(bindingList,
+                    rabbitBinding -> rabbitBinding.getSource().equals(rabbitExchange.getName()) && rabbitBinding.getDestination().equals(queue))) {
+                // 没有匹配的就去新建队列
+                rabbitAdmin.declareQueue(new Queue(queue, true, false, false, null));
+                // 创建绑定, fanout 类型的交换机会忽略路由键
+                rabbitAdmin.declareBinding(new Binding(queue, Binding.DestinationType.QUEUE, rabbitExchange.getName(), "", null));
+            }
 
 
         }
-//
-//        if ("fanout".equals(exchangeType)) {
-//            // 扇出的形式
-//
-//        } else if ("headers".equals(exchangeType)) {
+
+//        else if ("headers".equals(exchangeType)) {
 //            // 不做发送
 //        } else if ("direct".equals(exchangeType)) {
 //
