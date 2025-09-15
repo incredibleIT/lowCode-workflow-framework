@@ -6,20 +6,18 @@ import com.lowcode.workflow.runner.node.DefaultNode;
 import com.lowcode.workflow.runner.node.rabbit.entity.RabbitBinding;
 import com.lowcode.workflow.runner.node.rabbit.entity.RabbitExchange;
 import com.lowcode.workflow.runner.node.rabbit.entity.RabbitQueue;
-import lombok.Builder;
-import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 
+@Slf4j
 @Component
 public class RabbitMQNode extends DefaultNode {
 
@@ -105,7 +103,7 @@ public class RabbitMQNode extends DefaultNode {
                 // 没有匹配的就去新建队列
                 rabbitAdmin.declareQueue(new Queue(queue, true, false, false, null));
             }
-            rabbitTemplate.convertAndSend(exchange, queue, message);
+            rabbitTemplate.convertAndSend(exchange, message);
         }
 
         if ("fanout".equals(exchangeType)) {
@@ -118,23 +116,39 @@ public class RabbitMQNode extends DefaultNode {
                 rabbitAdmin.declareBinding(new Binding(queue, Binding.DestinationType.QUEUE, rabbitExchange.getName(), "", null));
             }
 
-
+            rabbitTemplate.convertAndSend(exchange, message);
         }
 
-//        else if ("headers".equals(exchangeType)) {
-//            // 不做发送
-//        } else if ("direct".equals(exchangeType)) {
-//
-//        } else if ("topic".equals(exchangeType)) {
-//
-//        }
+        if ("headers".equals(exchangeType)) {
+            log.info("headers 类型的交换机暂不作处理");
+        }
+
+        if ("direct".equals(exchangeType)) {
+            // 判断是否复用已经存在的队列
+            if (CollectionUtil.noneMatch(bindingList,
+                    rabbitBinding -> rabbitBinding.getSource().equals(rabbitExchange.getName()) && rabbitBinding.getDestination().equals(queue))) {
+                // 没有匹配的就去新建队列
+                rabbitAdmin.declareQueue(new Queue(queue, true, false, false, null));
+                // 创建绑定
+                rabbitAdmin.declareBinding(new Binding(queue, Binding.DestinationType.QUEUE, rabbitExchange.getName(), routingKey, null));
+            }
+
+            rabbitTemplate.convertAndSend(exchange, routingKey, message);
+        }
 
 
+        if ("topic".equals(exchangeType)) {
+            // 判断是否复用已经存在的队列
+            if (CollectionUtil.noneMatch(bindingList,
+                    rabbitBinding -> rabbitBinding.getSource().equals(rabbitExchange.getName()) && rabbitBinding.getDestination().equals(queue))) {
+                // 没有匹配的就去新建队列
+                rabbitAdmin.declareQueue(new Queue(queue, true, false, false, null));
+                // 创建绑定
+                rabbitAdmin.declareBinding(new Binding(queue, Binding.DestinationType.QUEUE, rabbitExchange.getName(), routingKey, null));
+            }
 
-
-
-
-
+            rabbitTemplate.convertAndSend(exchange, routingKey, message);
+        }
         callback.callback(putToNextNodeInput());
     }
 }
