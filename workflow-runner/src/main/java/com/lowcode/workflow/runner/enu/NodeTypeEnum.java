@@ -4,6 +4,7 @@ import com.lowcode.workflow.common.model.NodeRuntimeData;
 import com.lowcode.workflow.runner.node.Node;
 import com.lowcode.workflow.runner.node.db.mysql.MysqlNode;
 import com.lowcode.workflow.runner.node.output.OutputNode;
+import com.lowcode.workflow.runner.node.rabbit.RabbitMQNode;
 import com.lowcode.workflow.runner.node.start.StartNode;
 import com.lowcode.workflow.runner.node.timer.TimerNode;
 import jdk.nashorn.internal.runtime.regexp.joni.constants.internal.NodeType;
@@ -17,7 +18,8 @@ public enum NodeTypeEnum {
     START("start", StartNode.class),
     TIMER("timer", TimerNode.class),
     OUTPUT("output", OutputNode.class),
-    MYSQL("mysql", MysqlNode.class);
+    MYSQL("mysql", MysqlNode.class),
+    RABBITMQ("rabbit", RabbitMQNode.class);
 
 
     private final String type;

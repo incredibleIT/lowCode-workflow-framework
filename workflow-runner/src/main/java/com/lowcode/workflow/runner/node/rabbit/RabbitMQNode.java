@@ -12,16 +12,18 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-
+/**
+ * rabbitmq 节点
+ */
 @Slf4j
-@Component
 public class RabbitMQNode extends DefaultNode {
 
-    private String BASE_URL = "rabbitmq://localhost:15672/api";
+    private String BASE_URL = "http://localhost:15672/api";
+
+    private String url = "127.0.0.1";
 
     private String username = "guest";
 
@@ -38,8 +40,14 @@ public class RabbitMQNode extends DefaultNode {
     private String binding;
 
     private final RabbitMQMetaGetterService rabbitMQMetaGetterService = new RabbitMQMetaGetterService(username, password);
-    private final DynamicRabbitConnectionBuilder dynamicRabbitConnectionBuilder = new DynamicRabbitConnectionBuilder(BASE_URL, "15672", username, password);
-
+//    private final DynamicRabbitConnectionBuilder dynamicRabbitConnectionBuilder = new DynamicRabbitConnectionBuilder(url, "5672", username, password);
+    private final DynamicRabbitConnectionBuilder connectionBuilder =
+        DynamicRabbitConnectionBuilder.builder()
+                .username(username)
+                .password(password)
+                .host(url)
+                .port("5672")
+                .build();
 
     /**
      * 构造当前节点参数
@@ -52,6 +60,7 @@ public class RabbitMQNode extends DefaultNode {
 
     @Override
     protected void verify(Document params) {
+        log.info("正在对RabbitMQ节点进行参数校验以及参数赋值");
 
         String username = params.getString("username");
         String password = params.getString("password");
@@ -69,9 +78,10 @@ public class RabbitMQNode extends DefaultNode {
         this.exchange = exchange;
         this.queue = queue;
         this.routingKey = routingKey;
-        this.message = message;
+        this.getInput().put("message", message);
         this.binding = binding;
 
+        log.info("-----------------------RabbitMQ节点参数校验以及参数赋值完成, input: {}", this.getInput());
     }
 
     /**
@@ -83,6 +93,7 @@ public class RabbitMQNode extends DefaultNode {
      */
     @Override
     public void run(CallbackFunction callback) {
+        log.info("进入到RabbitMq的run运行方法");
         // 先查询出所有需要的信息
         List<RabbitExchange> exchangeList = rabbitMQMetaGetterService.getAllExchange();
         List<RabbitQueue> queueList = rabbitMQMetaGetterService.getAllQueue();
@@ -91,9 +102,9 @@ public class RabbitMQNode extends DefaultNode {
         RabbitExchange rabbitExchange = rabbitMQMetaGetterService.getExchangeByName(exchange);
         String exchangeType = rabbitExchange.getType();
         // rabbit对于exchange, queue, binding的操作
-        RabbitAdmin rabbitAdmin = dynamicRabbitConnectionBuilder.getRabbitAdmin();
+        RabbitAdmin rabbitAdmin = connectionBuilder.getRabbitAdmin();
         // 用于发送消息
-        RabbitTemplate rabbitTemplate = dynamicRabbitConnectionBuilder.getRabbitTemplate();
+        RabbitTemplate rabbitTemplate = connectionBuilder.getRabbitTemplate();
 
 
         if ("".equals(exchangeType)) {
@@ -103,7 +114,8 @@ public class RabbitMQNode extends DefaultNode {
                 // 没有匹配的就去新建队列
                 rabbitAdmin.declareQueue(new Queue(queue, true, false, false, null));
             }
-            rabbitTemplate.convertAndSend(exchange, message);
+//            rabbitTemplate.convertAndSend(exchange, message);
+            rabbitTemplate.convertAndSend(exchange, getInput());
         }
 
         if ("fanout".equals(exchangeType)) {
@@ -116,7 +128,8 @@ public class RabbitMQNode extends DefaultNode {
                 rabbitAdmin.declareBinding(new Binding(queue, Binding.DestinationType.QUEUE, rabbitExchange.getName(), "", null));
             }
 
-            rabbitTemplate.convertAndSend(exchange, message);
+//            rabbitTemplate.convertAndSend(exchange, message);
+            rabbitTemplate.convertAndSend(exchange, getInput());
         }
 
         if ("headers".equals(exchangeType)) {
@@ -133,7 +146,8 @@ public class RabbitMQNode extends DefaultNode {
                 rabbitAdmin.declareBinding(new Binding(queue, Binding.DestinationType.QUEUE, rabbitExchange.getName(), routingKey, null));
             }
 
-            rabbitTemplate.convertAndSend(exchange, routingKey, message);
+//            rabbitTemplate.convertAndSend(exchange, routingKey, message);
+            rabbitTemplate.convertAndSend(exchange, routingKey, getInput());
         }
 
 
@@ -147,7 +161,8 @@ public class RabbitMQNode extends DefaultNode {
                 rabbitAdmin.declareBinding(new Binding(queue, Binding.DestinationType.QUEUE, rabbitExchange.getName(), routingKey, null));
             }
 
-            rabbitTemplate.convertAndSend(exchange, routingKey, message);
+//            rabbitTemplate.convertAndSend(exchange, routingKey, message);
+            rabbitTemplate.convertAndSend(exchange, routingKey, getInput());
         }
         callback.callback(putToNextNodeInput());
     }
