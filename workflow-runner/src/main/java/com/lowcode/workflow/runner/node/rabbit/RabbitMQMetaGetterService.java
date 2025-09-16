@@ -25,11 +25,14 @@ public class RabbitMQMetaGetterService {
     private final OkHttpClient httpClient;
     private final String usernameAndPassword;
     private final Gson gson;
+    private final String baseUrl;
 
-    public RabbitMQMetaGetterService(String username, String password) {
+
+    public RabbitMQMetaGetterService(String username, String password, String baseUrl) {
         this.httpClient = new OkHttpClient.Builder().build();
         this.usernameAndPassword = Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
         this.gson = new Gson();
+        this.baseUrl = baseUrl;
     }
 
     /**
@@ -97,9 +100,8 @@ public class RabbitMQMetaGetterService {
 
 
     private Request getRequest(String url) {
-        String BASE_URL = "http://127.0.0.1:15672/api";
         return new Request.Builder()
-                .url(BASE_URL + url)
+                .url(this.baseUrl + url)
                 .header("Authorization", "Basic " + this.usernameAndPassword)
                 .build();
     }
@@ -108,6 +110,32 @@ public class RabbitMQMetaGetterService {
 
     private Response getResponse(Request request) throws IOException {
         return httpClient.newCall(request).execute();
+    }
+
+    public static class Builder {
+        private String username;
+        private String password;
+        private String baseUrl;
+
+        public Builder setUsername(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public Builder setPassword(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder setBaseUrl(String baseUrl) {
+            this.baseUrl = baseUrl;
+            return this;
+        }
+
+
+        public RabbitMQMetaGetterService build() {
+            return new RabbitMQMetaGetterService(username, password, baseUrl);
+        }
     }
 
 

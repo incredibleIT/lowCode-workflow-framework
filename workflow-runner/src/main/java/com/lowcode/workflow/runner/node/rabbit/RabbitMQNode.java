@@ -21,9 +21,9 @@ import java.util.List;
 @Slf4j
 public class RabbitMQNode extends DefaultNode {
 
-    private String BASE_URL = "http://localhost:15672/api";
-
     private String url = "127.0.0.1";
+
+    private String BASE_URL = "http://" + url + ":15672/api";
 
     private String username = "guest";
 
@@ -39,7 +39,7 @@ public class RabbitMQNode extends DefaultNode {
 
     private String binding;
 
-    private final RabbitMQMetaGetterService rabbitMQMetaGetterService = new RabbitMQMetaGetterService(username, password);
+    private final RabbitMQMetaGetterService rabbitMQMetaGetterService = new RabbitMQMetaGetterService(username, password, this.BASE_URL);
 //    private final DynamicRabbitConnectionBuilder dynamicRabbitConnectionBuilder = new DynamicRabbitConnectionBuilder(url, "5672", username, password);
     private final DynamicRabbitConnectionBuilder connectionBuilder =
         DynamicRabbitConnectionBuilder.builder()
@@ -64,7 +64,7 @@ public class RabbitMQNode extends DefaultNode {
 
         String username = params.getString("username");
         String password = params.getString("password");
-        String baseUrl = params.getString("baseUrl");
+        String url = params.getString("url");
         String exchange = params.getString("exchange");
         String queue = params.getString("queue");
         String routingKey = params.getString("routingKey");
@@ -72,7 +72,7 @@ public class RabbitMQNode extends DefaultNode {
         String binding = params.getString("binding");
 
 
-        this.BASE_URL = baseUrl;
+        this.url = url;
         this.username = username;
         this.password = password;
         this.exchange = exchange;
