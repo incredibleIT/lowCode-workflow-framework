@@ -22,8 +22,8 @@ public class RunnerTest {
 
     @Test
     public void test01() {
-        new RabbitMQMetaGetterService("guest", "guest").getAllBinding();
-        new RabbitMQMetaGetterService("guest", "guest").getAllQueue();
-        new RabbitMQMetaGetterService("guest", "guest").getAllExchange();
+        new RabbitMQMetaGetterService("guest", "guest", "http://127.0.0.1:15672/api").getAllBinding();
+        new RabbitMQMetaGetterService("guest", "guest", "http://127.0.0.1:15672/api").getAllQueue();
+        new RabbitMQMetaGetterService("guest", "guest", "http://127.0.0.1:15672/api").getAllExchange();
     }
 }
