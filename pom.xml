@@ -21,6 +21,7 @@
         <module>workflow-web</module>
         <module>workflow-runner</module>
         <module>workflow-common</module>
+        <module>workflow-llm</module>
     </modules>
 
     <properties>

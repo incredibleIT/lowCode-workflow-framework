@@ -9,6 +9,7 @@ import com.lowcode.workflow.web.http.FlowRequest;
 import com.lowcode.workflow.web.http.PageResult;
 import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
